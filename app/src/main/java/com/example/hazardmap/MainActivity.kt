@@ -22,6 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.IOException
@@ -77,6 +78,45 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 googleMap.animateCamera(CameraUpdateFactory.zoomOut())
             }
         }
+
+        findViewById<FloatingActionButton>(R.id.btn_map_type).setOnClickListener {
+            if (::googleMap.isInitialized) {
+                googleMap.mapType = if (googleMap.mapType == GoogleMap.MAP_TYPE_NORMAL) {
+                    GoogleMap.MAP_TYPE_SATELLITE
+                } else {
+                    GoogleMap.MAP_TYPE_NORMAL
+                }
+            }
+        }
+
+        findViewById<FloatingActionButton>(R.id.btn_map_style).setOnClickListener {
+            showMapStyleDialog()
+        }
+    }
+
+    private fun showMapStyleDialog() {
+        val styles = arrayOf("Default", "Apple Maps Style", "Dark Mode", "Vibrant", "Colorblind Friendly")
+        
+        AlertDialog.Builder(this)
+            .setTitle("Choose Map Style")
+            .setItems(styles) { _, which ->
+                val styleResId = when (which) {
+                    1 -> R.raw.map_style_silver
+                    2 -> R.raw.map_style_dark
+                    3 -> R.raw.map_style_vibrant
+                    4 -> R.raw.map_style_colorblind
+                    else -> null
+                }
+                
+                if (::googleMap.isInitialized) {
+                    if (styleResId != null) {
+                        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, styleResId))
+                    } else {
+                        googleMap.setMapStyle(null) // Default
+                    }
+                }
+            }
+            .show()
     }
 
     override fun onMapReady(map: GoogleMap) {
