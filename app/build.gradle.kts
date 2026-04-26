@@ -17,8 +17,8 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["MAPS_API_KEY"] = project.findProperty("MAPS_API_KEY") ?: ""
     }
 
     buildTypes {
@@ -40,6 +40,10 @@ android {
 }
 
 dependencies {
+    implementation("com.google.android.gms:play-services-maps:20.0.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.libraries.places:places:5.2.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
